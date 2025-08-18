@@ -1,6 +1,8 @@
 #include "AST.hpp"
 #include <cassert>
 #include <cstdio>
+#include <fstream>
+#include <iostream>
 #include <memory>
 
 using namespace std;
@@ -30,7 +32,16 @@ int main(int argc, const char *argv[]) {
   auto ret = yyparse(ast);
   assert(!ret);
 
-  // 输出解析得到的 AST, 其实就是个字符串
   ast->Dump();
+
+  std::string output_str(output);
+  std::ofstream outfile(output_str);
+
+  if (!outfile.is_open()) {
+    std::cerr << "Error: Could not open the file" << output_str << endl;
+  }
+
+  ast->Dump(outfile);
+
   return 0;
 }

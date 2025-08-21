@@ -1,9 +1,14 @@
 #include "AST.hpp"
+#include "backend.hpp"
 #include <cassert>
 #include <cstdio>
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include <sstream>
+#include <string>
+
+#include "koopa.h"
 
 using namespace std;
 
@@ -15,7 +20,8 @@ using namespace std;
 extern FILE *yyin;
 extern int yyparse(unique_ptr<BaseAST> &ast);
 
-int main(int argc, const char *argv[]) {
+int main(int argc, const char *argv[])
+{
   // 解析命令行参数. 测试脚本/评测平台要求你的编译器能接收如下参数:
   // compiler 模式 输入文件 -o 输出文件
   assert(argc == 5);
@@ -32,16 +38,41 @@ int main(int argc, const char *argv[]) {
   auto ret = yyparse(ast);
   assert(!ret);
 
+  // Front end end.
+  // Mid end begin.
+
   ast->Dump();
 
   std::string output_str(output);
   std::ofstream outfile(output_str);
 
-  if (!outfile.is_open()) {
+  if (!outfile.is_open())
+  {
     std::cerr << "Error: Could not open the file" << output_str << endl;
   }
 
-  ast->Dump(outfile);
+  if (std::string(mode) == std::string("-koopa"))
+  {
+    ast->Dump(outfile);
+  }
 
+  // Mid end end.
+  // Back end begin.
+
+  if (std::string(mode) == std::string("-riscv"))
+  {
+
+    std::ostringstream ss;
+    ast->Dump(ss);
+    std::string koopa_str = ss.str();
+    const char *koopa_cstr = koopa_str.c_str();
+    Backend backend;
+    std::string assembly = backend.generateAssembly(koopa_cstr);
+    std::cout << "Generated Assembly:\n"
+              << assembly << std::endl;
+    outfile << assembly;
+  }
+
+  outfile.close();
   return 0;
 }

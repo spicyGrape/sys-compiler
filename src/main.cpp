@@ -41,7 +41,7 @@ int main(int argc, const char *argv[])
   // Front end end.
   // Mid end begin.
 
-  ast->Dump();
+  ast->Dump(std::cout);
 
   std::string output_str(output);
   std::ofstream outfile(output_str);

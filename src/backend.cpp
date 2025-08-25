@@ -1,9 +1,9 @@
 #include "backend.hpp"
-#include "assembly.hpp"
 #include "koopa.h"
 #include <iostream>
 #include <cassert>
 #include <string>
+#include <vector>
 
 std::string Backend::generateAssembly(const char *koopa_cstr)
 {

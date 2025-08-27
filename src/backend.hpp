@@ -14,7 +14,7 @@ public:
 
 private:
     // Parse Koopa IR string to raw program
-    koopa_raw_program_t parseToRaw(const char *koopa_cstr);
+    koopa_raw_program_t parseToRaw(const char *koopa_cstr, koopa_raw_program_builder_t builder);
 
     std::vector<std::string> text;
     std::vector<std::string> globalIdent;

@@ -7,26 +7,26 @@
 
 std::string Backend::generateAssembly(const char *koopa_cstr)
 {
-  koopa_raw_program_t raw = parseToRaw(koopa_cstr);
+
+  // 创建一个 raw program builder, 用来构建 raw program
+  koopa_raw_program_builder_t builder = koopa_new_raw_program_builder();
+  koopa_raw_program_t raw = parseToRaw(koopa_cstr, builder);
   std::string result = visit(raw);
+  koopa_delete_raw_program_builder(builder);
   return result;
 }
 
-koopa_raw_program_t Backend::parseToRaw(const char *koopa_cstr)
+koopa_raw_program_t Backend::parseToRaw(const char *koopa_cstr, koopa_raw_program_builder_t builder)
 {
   koopa_program_t program;
   koopa_error_code_t ret = koopa_parse_from_string(koopa_cstr, &program);
   assert(ret == KOOPA_EC_SUCCESS);
 
-  // 创建一个 raw program builder, 用来构建 raw program
-  koopa_raw_program_builder_t builder = koopa_new_raw_program_builder();
   // 将 Koopa IR 程序转换为 raw program
   koopa_raw_program_t raw = koopa_build_raw_program(builder, program);
   // 释放 Koopa IR 程序占用的内存
   koopa_delete_program(program);
 
-  // DON'T FORGET TO DELETE BUILDER!
-  // 泄漏了一个builder但是我不想管它
   return raw;
 }
 

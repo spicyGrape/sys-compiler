@@ -47,10 +47,11 @@ cmake --build build
 
 编译成功后会在 `build` 目录下生成 `compiler` 可执行文件。
 
-*注意: 如果需要链接 libkoopa 库，请设置相应的库路径和头文件路径：*
+**重要提示**: 如果遇到链接错误（如 "cannot find -lkoopa"），请确保已正确安装并配置 libkoopa 库路径：
 
 ```sh
 cmake -DCMAKE_BUILD_TYPE=Release -B build -DLIB_DIR="libkoopa目录" -DINC_DIR="libkoopa头文件目录"
+cmake --build build
 ```
 
 
